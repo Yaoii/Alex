@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>历史清单</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/user/usercenter.css" />
+    <link rel="stylesheet" href="plugins/jquery-pagination/css/jquery.pagination.css" />
+
+</head>
+
+<body style="background-color:#f4f4f4">
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+    <div class="user-wrap jwrap" style="margin-top:20px;">
+        <div class="user-sidebar fl">
+            <div class="personal-top" id="avator" style="height:120px"></div>
+            <div class="personal-menu">
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="order.html">我的清单</a>
+                    </li>
+                    <li class="menu-list-default current">
+                        <i></i>
+                        <a href="history-order.html">历史清单</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="addlike-list.html">我的收藏</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="my-question.html">我的问答</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="account-setting.html">账号设置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="user-body">
+            <div class="user-middle-title">
+                <h2 class="middle-title">历史清单</h2>
+            </div>
+            <div class="user-middle-filter">
+                <div class="filter-title" id="filterLength"></div>
+                <div class="filter-wrap" style="display:none">
+                    <span>全部</span>
+                    <ul class="filter-droplist" style="display:none">
+                        <li class="current">
+                            <a href="javascript:;">全部</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">待提交</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">已提交</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="user-middle-con">
+                <div class="order-list">
+                    <ul></ul>
+                    <div id="pagination1" class="page" style="text-align: center">
+                        <span id="totalPage" class="fl"></span>
+                    </div>
+
+                </div>
+                <div class="noList jwrap">
+                    <p>抱歉，没有找到相关订单</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shareBox" style="display:none">
+        <div class="share-to-box">
+            <div class="weixin-box">
+                <div style="text-align:center">
+                    <img src="" alt="" id="app-code">
+                    <span>分享给微信好友</span>
+                </div>
+            </div>
+            <div class="bds-box">
+                <!-- <a href="http://service.weibo.com/share/share.php?url=http://m.bgzyedu.com&title=123&pic=http://api.bgzyedu.com//userfiles/files/2018/08/07/c272b64ce4884992b3f636a2442dc2ff_12333.jpg"
+                    target="_blank">
+                    <img src="assets/img/sina-icon2.svg" alt="">
+                    <span>新浪微博</span>
+                </a>
+                <a href="https://connect.qq.com/widget/shareqq/index.html?url=http://m.bgzyedu.com&title=123" style="margin:0 56px"
+                    target="_blank">
+                    <img src="assets/img/qq-icon2.svg" alt="">
+                    <span>QQ好友</span>
+                </a>
+                <a href="#">
+                    <img src="assets/img/qzone2.svg" alt="">
+                    <span>QQ空间</span>
+                </a> -->
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="plugins/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.fileupload.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+    <script src="plugins/jquery-pagination/js/jquery.pagination.min.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script src="assets/do/user.js"></script>
+    <script>
+        var data = {
+            pageNum: getUrlParam('pageNum') || 1,
+            pageSize: getUrlParam('pageSize') || pageSize
+        }
+        $(function () {
+            getHistoryList()
+        })
+        //查询历史订单
+        function getHistoryList() {
+            $.get(frontContextPath + '/order/getHistoryBillList.do', data, function (res) {
+                if (res.responeCode == '0') {
+                    var info = res
+                    res = res.data.billList;
+                    if (res.length > 0) {
+                        $('#filterLength').text('共' + info.data.total + '个历史清单')
+                        var result = ''
+                        res.forEach(function (val) {
+                            var thumb_img = ''
+                            if (val.goodsList.length > 0) {
+                                val.goodsList.forEach(function (imgVal, index) {
+                                    if (index < 4) {
+                                        thumb_img += '<div class="card-album-aspect">' +
+                                            '<img src="' + imgVal.goodsImg + '" alt="">' +
+                                            '</div>';
+                                    }
+                                })
+                            }
+                            result += '<li id="' + val.billId + '">' +
+                                '<div class="order-img">' +
+                                '<a href="order-detail.html#' + val.billId + '">' + thumb_img + '</a>' +
+                                '</div>' +
+                                '<div class="order-info">' +
+                                '<div class="order-title">' +
+                                '<span>' + val.billName + '</span>' +
+                                '</div>' +
+                                '<div class="order-share">' +
+                                '<i class="icon-share" onclick="shareOrder(\'' + val.billId +
+                                '\',\'' + val.billName + '\')"></i>' +
+                                '<span class="fr">' + val.goodsList.length + '件商品</span>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="order-creattime">' +
+                                '<span>' + isCurYear(val.createDate) + ' 前更新</span>' +
+                                '</div>' +
+                                '</li>'
+                        })
+                        $('.order-list ul').html(result)                                             
+                        $("#pagination1").pagination({
+                            currentPage: parseInt(data.pageNum),
+                            totalPage: info.data.pages,
+                            callback: function (current) {
+                                data.pageNum = current                               
+                                PostRequest(data)    
+                            }
+                        });
+                        $('#totalPage').html('共' + info.data.pages + '页')
+
+                    } else {
+                        $('.noList').show()
+                    }
+                }
+            })
+        }
+
+        //分享清单
+        function shareOrder(id, name) {
+            var app_share_code = $('#' + id).attr('data-img');
+            var url = 'http://alex-uat.witfort.cn/';
+            var billName = name;
+            var links =
+                '<a href="http://service.weibo.com/share/share.php?url=' + url + '&title=' + billName +
+                '" target="_blank">' +
+                '<img src="assets/img/sina-icon2.svg" alt="">' +
+                '<span>新浪微博</span>' +
+                '</a>' +
+                '<a href="https://connect.qq.com/widget/shareqq/index.html?url=' + url + '&title=' +
+                billName + '" style="margin:0 56px" target="_blank">' +
+                '<img src="assets/img/qq-icon2.svg" alt="">' +
+                '<span>QQ好友</span>' +
+                '</a>' +
+                '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + url +
+                '&title=' + billName + '"  target="_blank">' +
+                '<img src="assets/img/qzone2.svg" alt="">' +
+                '<span>QQ空间</span>' +
+                '</a>'
+            $('.bds-box').html(links)
+            if (app_share_code) {
+                $('#app-code').attr('src', requestPath + '/images' + app_share_code)
+                //页面层
+                layer.open({
+                    title: '分享清单-' + name,
+                    type: 1,
+                    skin: '', //加上边框
+                    area: ['420px'], //宽高
+                    content: $('#shareBox').html()
+                });
+            } else {
+                //获取小程序分享码
+                $.post(frontContextPath + '/order/getShareImg.do', {
+                    billId: id
+                }, function (res) {
+                    if (res.responeCode == '0') {
+                        $('#' + id).attr('data-img', res.data);
+                        $('#app-code').attr('src', requestPath + '/images' + res.data)
+                        //页面层
+                        layer.open({
+                            title: '分享清单-' + name,
+                            type: 1,
+                            skin: '', //加上边框
+                            area: ['420px'], //宽高
+                            content: $('#shareBox').html()
+                        });
+                    }
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>

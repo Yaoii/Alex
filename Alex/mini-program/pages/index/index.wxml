@@ -1,0 +1,11 @@
+<!--index.wxml-->
+<view class="container">
+  <button bindtap='getUserInfo'>获取用户信息</button>
+  <button bindtap='pay'>支付一分钱</button>
+
+
+  <open-data type="userAvatarUrl"></open-data>
+  <open-data type="userNickName"></open-data>
+
+  <button wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">授权登录</button>
+</view>

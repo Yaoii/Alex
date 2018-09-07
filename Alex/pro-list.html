@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>亚力山大家具家居，做最好的自己</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/product/product.css">
+    <link rel="stylesheet" href="plugins/jquery-pagination/css/jquery.pagination.css">
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="user-wrap jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search_box" id="productSearch">
+                    <form>
+                        <input type="text" value="Search" id="search" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Search';}">
+                        <a href="javascript:;" onclick="searchGood()"></a>
+                    </form>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+
+    <div>
+        <img src="assets/img/advert-01.png" alt="" width="100%">
+    </div>
+    <div class="product-tags">
+        <div class="jwrap">
+            <div class="filterBox" id="menuBOX"></div>
+            <div id="secondMenuBox" class="second-menu"></div>
+            <div class="filterKey">
+                <p>您搜索的关键字：
+                    <span></span>
+                    <a href="javascript:;" onclick="cancelKey()" title="取消关键字"></a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="m-tb-30 jwrap bg-white">
+        <div class="prolist">
+            <ul class="pro-ul-list">
+                <!-- <li>
+                    <div class="pro-img">
+                        <div class="thumbImg">
+                            <a href="#">
+                                <img src="upfile/1516005765.jpg" alt="">
+                            </a>
+                        </div>
+                        <div class="smallImg">
+                            <a href="javscript:;">
+                                <img src="upfile/1516005765.jpg" alt="">
+                            </a>
+                            <a href="javscript:;">
+                                <img src="upfile/1516005765.jpg" alt="">
+                            </a>
+                            <a href="javscript:;">
+                                <img src="upfile/1516005765.jpg" alt="">
+                            </a>
+                            <a href="javscript:;">
+                                <img src="upfile/1516005765.jpg" alt="">
+                            </a>
+                            <a href="javscript:;">
+                                <img src="upfile/1516005765.jpg" alt="">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="prol-info">
+                        <a href="#">
+                            <span class="good-name">美式风布艺双人床RAX2A美式风布艺双人床RAX2A美式风布艺双人床RAX2A</span>
+                        </a>
+                        <span class="good-price">￥20897.00</span>
+                    </div>
+                    <div class="prol-button">
+                        <a href="javascript:;" class="add-like">加入收藏</a>
+                        <a href="javascript:;" class="add-list">加入清单</a>
+                    </div>  
+                    <div class="mianfeibq"><img src="assets/img/mianfeibq.png"></div>                  
+                </li> -->
+            </ul>
+            <div id="pagination1" class="page" style="text-align: center"></div>
+
+        </div>
+        <div class="noList jwrap" style="display:none">
+            <p>抱歉，没有找到相关商品</p>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="plugins/jquery-pagination/js/jquery.pagination.min.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script src="assets/do/addshopcart.js"></script>
+
+    <script>
+        //关键字
+        var keyword = getUrlParam('keyword') || '';        
+        if (keyword) {
+            keyword = decodeURI(decodeURI(keyword))
+            $('#search').val(keyword)
+            $('.filterKey').show().find('span').text(keyword)
+        }
+        var data = {
+                id: getUrlParam('id') || '',
+                typeId: getUrlParam('typeId') || '',
+                professionalId: getUrlParam('professionalId') || '',
+                styleId: getUrlParam('styleId') || '',
+                pageNum: getUrlParam('pageNum') || 1,
+                pageSize: getUrlParam('pageSize') || pageSize,
+                keyword: keyword
+            },
+            menuList = {}; //分类列表 
+
+        $(function () {
+            getCatalog()
+            getProductByPage()
+
+        })
+       
+        //按分页查询商品
+        function getProductByPage() {
+            getProduct(data, 1, function (page) {
+                $("#pagination1").pagination({
+                    currentPage: parseInt(data.pageNum),
+                    totalPage: page,
+                    callback: function (current) {
+                        data.pageNum = current
+                        PostRequest(data)
+                    }
+                });
+            })
+        }
+
+        //获取分类
+        function getCatalog() {
+            $.post(frontContextPath + '/product/getCatalog.do', function (res) {
+                if (res.responeCode == '0') {
+                    res = res.data;
+                    if (res.goodsStyle.length) {
+                        var _temp = '';
+                        res.goodsStyle.forEach(function (val) {
+                            var _selected = '';
+                            if (val.id == data.styleId) {
+                                _selected = 'selected'
+                            }
+                            _temp += '<a data-id="' + val.id +
+                                '" href="javascript:;" onclick="selectStyle(this,1)" class="' +
+                                _selected + '">' + val.name +
+                                '</a>';
+                        })
+                        var all_select = data.styleId == '' ? 'selected' : ''
+                        _temp =
+                            '<div class="filter-item"><span>风格</span><p><a href="javascript:;"  class="' +
+                            all_select + '" onclick="selectStyle(this,1)">全部</a>' +
+                            _temp + '</p></div>';
+                        $('#menuBOX').append(_temp)
+                    }
+                    if (res.professional.length > 0 && userinfo && userinfo.userType != '3') {
+                        var _temp = '';
+                        res.professional.forEach(function (val) {
+                            var _selected = '';
+                            if (val.id == data.professionalId) {
+                                _selected = 'selected'
+                            }
+                            _temp += '<a data-id="' + val.id +
+                                '" href="javascript:;"  onclick="selectStyle(this,2)" class="' +
+                                _selected + '">' + val.name +
+                                '</a>';
+                        })
+                        var all_select = data.professionalId == '' ? 'selected' : ''
+                        _temp =
+                            '<div class="filter-item"><span>专业</span><p><a href="javascript:;" class="' +
+                            all_select + '"  onclick="selectStyle(this,2)">全部</a>' +
+                            _temp + '</p></div>';
+                        $('#menuBOX').append(_temp)
+                    }
+                    if (res.menu.length) {
+                        var _temp = '';
+                        res.menu.forEach(function (val) {
+                            var _selected = '';
+                            if (val.id == data.id) {
+                                _selected = 'selected'
+                            }
+                            _temp += '<a data-id="' + val.id +
+                                '" href="javascript:;" class="' + _selected + '">' + val.name +
+                                '</a>';
+                            menuList[val.id] = val.goodsType
+                        })
+                        var all_select = data.id == '' ? 'selected' : ''
+                        _temp =
+                            '<div class="filter-item" id="menuItem"><span>类型</span><p><a href="javascript:;" class="' +
+                            all_select + '">全部</a>' +
+                            _temp + '</p></div>';
+                        $('#menuBOX').append(_temp)
+
+                        //一级分类Dom事件 
+                        $('#menuItem a').click(function () {
+                            if ($(this).hasClass('selected')) return;
+                            var parentId = $(this).attr('data-id');
+                            $(this).addClass('selected').siblings('a').removeClass('selected');
+                            $('#secondMenuBox').html('').hide()
+                            if (parentId && menuList[parentId].length > 0) {
+                                menuList[parentId].forEach(function (val) {
+                                    $('#secondMenuBox').append('<a data-id="' + val.id +
+                                        '" href="javascript:;">' + val.name + '</a>').show()
+                                })
+                            }
+                            data.id = parentId || '';
+                            data.typeId = '';
+                            data.pageNum = 1
+                            PostRequest(data)
+                        })
+                        //根据url传过来的Id渲染二级分类
+                        if (data.id && menuList[data.id].length > 0) {
+                            var selectedFirst = ''
+                            if (menuList[data.id].length == 1) {
+                                selectedFirst = 'selected'
+                            }
+                            menuList[data.id].forEach(function (val) {
+                                var _selected = '';
+                                if (val.id == data.typeId) {
+                                    _selected = 'selected'
+                                }
+                                $('#secondMenuBox').append('<a data-id="' + val.id +
+                                    '" href="javascript:;" class="' + _selected + ' ' +
+                                    selectedFirst + '">' + val.name +
+                                    '</a>').show()
+                            })
+                        }
+                        //二级分类Dom事件
+                        $('body').on('click', '#secondMenuBox a', function () {
+                            if ($(this).hasClass('selected')) return;
+                            $(this).addClass('selected').siblings('a').removeClass('selected');
+                            data.typeId = $(this).attr('data-id');
+                            data.pageNum = 1
+                            PostRequest(data)
+                        })
+                    }
+                }
+            })
+        }
+
+        //鼠标经过小图切换大图
+        function previewIMG(self, url) {
+            if ($(self).hasClass('hover')) return;
+            $(self).addClass('hover').siblings().removeClass('hover');
+            $(self).closest('li').find('.thumbImg').find('img').attr('src', url)
+        }
+
+        //选择风格和专业
+        function selectStyle(self, type) {
+            if ($(self).hasClass('selected')) return;
+            $(self).addClass('selected').siblings('a').removeClass('selected');
+            if (type == '1') {
+                data.styleId = $(self).attr('data-id') || ''
+            } else {
+                data.professionalId = $(self).attr('data-id') || ''
+            }
+            data.pageNum = 1
+            PostRequest(data)
+        }
+        //跳转搜索页
+        function searchGood() {
+            var keyword = $.trim($('#search').val())
+            if (keyword == 'Search') {
+                keyword = ''
+            } 
+            data.keyword = keyword           
+            PostRequest(data)
+        }
+        //删除关键字
+        function cancelKey() {
+            data.keyword = ''
+            PostRequest(data)
+        }
+    </script>
+
+</body>
+
+</html>

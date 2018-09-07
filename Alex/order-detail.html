@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>我的清单</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/user/usercenter.css" />
+
+</head>
+
+<body style="background-color:#f4f4f4">
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+    <div class="user-wrap jwrap mt-20" style="display:none" id="contentBOx">
+        <div class="user-sidebar fl" style="min-height:400px;background-color:#fff">
+            <div class="order-tjlist">
+                <h4 id="listLEN"></h4>
+                <ul id="commandLIST">
+                    <!-- <li class="current">
+                        <a href="#">
+                            <div class="thumb-img fl">
+                                <div class="">
+                                    <img src="upfile/b3.jpg" width="100%">
+                                </div>
+                                <div class="">
+                                    <img src="upfile/b1.jpg" width="100%">
+                                </div>
+                                <div class="">
+                                    <img src="upfile/b2.jpg" width="100%">
+                                </div>
+                                <div class="">
+                                    <img src="upfile/b3.jpg" width="100%">
+                                </div>
+                            </div>
+                            <p>
+                                <b>我喜爱的清单</b>
+                                <span>9个内容</span>
+                            </p>
+                        </a>
+                        <div class="edit-btn">
+                            <a href="javascript:;" onclick="editOrder()">编辑</a>
+                            <a href="javascript:;" onclick="deleteOrder()">删除</a>
+                        </div>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+        <div class="user-body">
+            <div class="user-middle-title">
+                <h2 class="middle-title" id="billName"></h2>
+                <a href="javascript:;" class="fr alex-link-color" id="backList">返回我的清单</a>
+            </div>
+            <div class="order-detail-info">
+                <div class="cart-submit-btn fr" id="submitBtn1">
+                    <a href="javascript:;" class="btn btn-yellow" onclick="commitBill()">确认提交</a>
+                </div>
+                <div class="cart-submit-btn fr" id="submitBtn2">
+                    <a href="javascript:;" class="btn btn-yellow" onclick="shareOrder()">分享清单</a>
+                </div>
+                <div class="time" id="creatDate"></div>
+            </div>
+            <div class="user-middle-filter">
+                <div class="filter-title">
+                    <span id="filterLen"></span>
+                </div>
+            </div>
+            <div class="user-middle-con">
+                <div class="order-list" id="order-prolist">
+                    <ul></ul>
+                </div>
+                <div class="noList">
+                    <p>亲，您还没有添加产品哦~
+                        <a href="pro-list.html">快去看看吧</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="shareBox" style="display:none">
+        <div class="share-to-box">
+            <div class="weixin-box">
+                <div style="text-align:center">
+                    <img src="" alt="" id="app-code">
+                    <span>分享给微信好友</span>
+                </div>
+            </div>
+            <div class="bds-box">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script>
+        var billId = ''; //清单id
+        var goodsListLen = 0; //清单产品数量
+        $(function () {
+
+            //hash值查清单详情
+            watchHashChage()
+            window.addEventListener('hashchange', watchHashChage)
+
+            //获取最新清单列表
+            getBillList()
+
+            //编辑清单
+            $('body').on('click', '.edit-order', function () {
+                var title = $(this).attr('data-orderTitle')
+                var billId = $(this).attr('data-billid')
+                //prompt层
+                layer.prompt({
+                    title: '编辑清单',
+                    formType: 0,
+                    value: title
+                }, function (text, index) {
+                    if (text == title) {
+                        layer.msg('请输入新清单名', {
+                            icon: 2,
+                            time: 2000
+                        });
+                        return;
+                    }
+                    $.get(frontContextPath + '/order/editBill.do', {
+                        billId: billId,
+                        billName: text
+                    }, function (res) {
+                        if (res.responeCode == '0') {
+                            layer.close(index);
+                            layer.msg('清单编辑成功', {
+                                icon: 1,
+                                time: 2000
+                            }, function () {
+                                location.reload()
+                            });
+                        } else {
+                            layer.msg(res.responeMsg)
+                        }
+                    })
+                });
+            })
+
+            //删除清单        
+            $('body').on('click', '.delete-order', function () {
+                var billId = $(this).attr('data-billid')
+                if ($(this).attr('data-len') != '0') {
+                    //询问框
+                    layer.confirm('确定删除此清单？<br/>清单内容也将会同步移除', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        $.post(frontContextPath + '/order/deleteBill.do?billId=' + billId,
+                            function (res) {
+                                if (res.responeCode == '0') {
+                                    layer.msg('操作成功');
+                                    location.reload()
+                                } else {
+                                    layer.msg(res.responeMsg);
+                                }
+                            })
+                    });
+                } else {
+                    $.post(frontContextPath + '/order/deleteBill.do?billId=' + billId, function (res) {
+                        if (res.responeCode == '0') {
+                            layer.msg('操作成功');
+                            location.reload()
+                        } else {
+                            layer.msg(res.responeMsg);
+                        }
+                    })
+                }
+            })
+
+            //移除清单中的产品
+            $('body').on('click', '.remove-btn', function () {
+                var billGoodsId = $(this).attr('data-billGoodsId')
+                $.get(frontContextPath + '/order/deleteBillGood.do', {
+                    billGoodsId: billGoodsId,
+                    billId: billId
+                }, function (res) {
+                    if (res.responeCode == '0') {
+                        layer.msg('删除成功', {
+                            time: 800, //2秒关闭（如果不配置，默认是3秒），
+                            icon: 1
+                        }, function () {
+                            $('#' + billGoodsId).remove()
+                        })
+
+                    } else {
+                        layer.msg(res.responeMsg)
+                    }
+                })
+            })
+
+        })
+
+        //获取左侧清单列表
+        function getBillList() {
+            $.get(frontContextPath + '/order/getBillList.do', {
+                pageNum: 1,
+                pageSize: 5
+            }, function (res) {
+                if (res.responeCode == '0') {
+                    res = res.data.billList;                    
+                    if (res.length > 0) {
+                        $('#listLEN').html('我的清单(' + res.length + ')')
+                        var _tempStr = ''
+                        res.forEach(function (val) {
+                            var thumb_img = ''
+                            if (val.goodsList.length > 0) {
+                                val.goodsList.forEach(function (imgVal, index) {
+                                    if (index < 4) {
+                                        thumb_img += '<div class="">' +
+                                            '<img src="' + imgVal.goodsImg +
+                                            '" width="44px" height="44px">' +
+                                            '</div>';
+                                    }
+                                })
+                            }
+                            var currentClass = billId == val.billId ? 'current' : ''
+                            _tempStr += '<li class="' + currentClass + '">' +
+                                '<a href="#' + val.billId + '">' +
+                                '<div class="thumb-img fl">' + thumb_img + '</div>' +
+                                '<p>' +
+                                '<b>' + val.billName + '</b>' +
+                                '<span>' + val.goodsList.length + '件商品</span>' +
+                                '</p>' +
+                                '</a>' +
+                                '<div class="edit-btn">' +
+                                '<a href="javascript:;" class="edit-order" data-orderTitle="' + val.billName +
+                                '" data-billid="' + val.billId + '">编辑</a>' +
+                                '<a href="javascript:;" class="delete-order" data-billid="' + val.billId +
+                                '" data-len="' + val.goodsList.length + '" style="display:none">删除</a>' +
+                                '</div>' +
+                                '</li>';
+                        })
+                        $('#commandLIST').html(_tempStr)
+
+                        //DoM操作
+                        $('#commandLIST li').click(function () {
+                            if ($(this).hasClass('current')) return;
+                            $(this).addClass('current').siblings('li').removeClass()
+                        })
+                        $('.order-tjlist li').hover(function () {
+                            $(this).find('.edit-btn').show();
+                        }, function () {
+                            $(this).find('.edit-btn').hide();
+                        })
+                    }
+                }
+            })
+        }
+        //查询清单详情
+        var billId = '',
+            billName = '',
+            status = '';
+
+        function getBillDetail() {
+            $.post(frontContextPath + '/order/getBillListById.do?billId=' + billId, function (res) {
+                if (res.responeCode == '0') {
+                    res = res.data
+
+                    //基本信息
+                    $('#billName').text(res.billName)
+                    $('#creatDate').html(
+                        '<span>创建时间 <b>' + isCurYear(res.createDate) + '</b></span><span>更新时间 <b>' +
+                        isCurYear(res.updateDate) + '</b></span>')
+                    $('#filterLen').text('共' + res.goodsList.length + '个产品')
+                    billId = res.billId
+                    billName = res.billName
+                    status = res.status
+
+
+                    //显示提交按钮
+                    if (res.status == '0' && res.goodsList.length > 0) {
+                        $('#submitBtn1').show()
+                    }
+                    //显示下载cad按钮
+                    if (res.status == '1') {
+                        $('#submitBtn2').show()
+                    }
+
+                    //产品列表
+                    if (res.goodsList.length > 0) {
+                        goodsListLen = res.goodsList.length;
+
+                        $('.noList').hide()
+                        $('#order-prolist').show()
+
+                        var result = '';
+                        res.goodsList.forEach(function (item) {
+
+                            //移除按钮
+                            var deleteBtn = ''
+                            if (res.status == '0') {
+                                deleteBtn =
+                                    '<a href="javascript:;" class="remove-btn" data-billGoodsId="' +
+                                    item.billGoodsId +
+                                    '">移除</a>'
+                            }
+                            item.price = item.price == '0' ? '定制价' : item.price;
+                            item.isCollection
+                            result += '<li id="' + item.billGoodsId + '">' +
+                                '<div class="order-img">' +
+                                '<a href="pro-detail.html?id=' + item.goodsId + '">' +
+                                '<img src="' + item.goodsImg + '"  width="100%" height="100%">' +
+                                '</a>' +
+                                '</div>' +
+                                '<div class="order-info border-none">' +
+                                '<div class="order-title">' +
+                                '<a href="pro-detail.html">' +
+                                '<span>' + item.goodsName + '</span>' +
+                                '</a>' +
+                                '<b>已选:' + item.productSkuDesc + '</b><b>x' + item.goodsNum + '</b>' +
+                                '</div>' +
+                                '<div class="order-share">' +
+                                '<i class="icon-share icon-like fr" data-id="' + item.goodsId +
+                                '" style="display:none"></i>' +
+                                '<span>￥' + item.price + '</span>' +
+                                '</div>' +
+                                '</div>' + deleteBtn +
+                                '</li>'
+                        })
+                        $('#order-prolist ul').html(result);
+
+                        //Dom操作：鼠标经过显示移除按钮
+                        $('.order-list li').hover(function () {
+                            $(this).find('.remove-btn').show();
+                        }, function () {
+                            $(this).find('.remove-btn').hide();
+                        })
+
+                    } else {
+                        $('.noList').show()
+                        $('#order-prolist').hide()
+                    }
+                    $('#contentBOx').show()
+                }
+            })
+        }
+
+        //提交清单
+        function commitBill() {
+            if (goodsListLen == 0) {
+                layer.msg('亲，请添加产品后再提交~')
+                return;
+            }
+            var data = {
+                billList: [billId]
+            };
+            $.ajax({
+                url: frontContextPath + '/order/commitBill.do',
+                type: 'post',
+                data: JSON.stringify(data),
+                success: function (res) {
+                    if (res.responeCode == '0') {
+                        layer.msg('清单提交成功', {
+                            icon: 1,
+                            time: 1500
+                        }, function () {
+                            location.href = 'order.html'
+                        })
+
+                    } else {
+                        layer.msg(res.responeMsg)
+                    }
+                }
+            })
+        }
+
+        //监听hash值的变化
+        function watchHashChage() {
+            billId = window.location.hash.slice(1)
+            getBillDetail()
+        }
+
+        //分享清单
+        function shareOrder() {
+            //获取小程序分享码
+            $.post(frontContextPath + '/order/getShareImg.do', {
+                billId: billId
+            }, function (res) {
+                if (res.responeCode == '0') {
+                    var url = 'http://alex-uat.witfort.cn/'
+                    var links =
+                        '<a href="http://service.weibo.com/share/share.php?url=' + url + '&title=' + billName +
+                        '" target="_blank">' +
+                        '<img src="assets/img/sina-icon2.svg" alt="">' +
+                        '<span>新浪微博</span>' +
+                        '</a>' +
+                        '<a href="https://connect.qq.com/widget/shareqq/index.html?url=' + url + '&title=' +
+                        billName + '" style="margin:0 56px" target="_blank">' +
+                        '<img src="assets/img/qq-icon2.svg" alt="">' +
+                        '<span>QQ好友</span>' +
+                        '</a>' +
+                        '<a href="https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + url +
+                        '&title=' + billName + '"  target="_blank">' +
+                        '<img src="assets/img/qzone2.svg" alt="">' +
+                        '<span>QQ空间</span>' +
+                        '</a>'
+                    $('.bds-box').html(links)
+                    $('#app-code').attr('src', requestPath + '/images' + res.data)
+
+
+                    //页面层
+                    layer.open({
+                        title: '分享清单-' + billName,
+                        type: 1,
+                        skin: '', //加上边框
+                        area: ['420px','360px'], //宽高
+                        content: $('#shareBox').html()
+                    });
+                }
+            })
+        }
+        //返回我的列表
+        $('#backList').click(function () {
+            if (status == '1') {
+                location.href = 'history-order.html'
+            } else {
+                location.href = 'order.html'
+            }
+        })
+    </script>
+</body>
+
+</html>

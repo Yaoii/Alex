@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+
+    <title>我的清单</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/user/usercenter.css" />
+    <link rel="stylesheet" href="plugins/jquery-pagination/css/jquery.pagination.css" />
+
+</head>
+
+<body style="background-color:#f4f4f4">
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+    <div class="user-wrap jwrap" style="margin-top:20px;">
+        <div class="user-sidebar fl">
+
+            <div class="personal-top" id="avator" style="height:120px">
+                <!-- <div class="avatar-box">
+                    <label for="path">
+                        <img src="assets/img/girl2.png" alt="" id="headURL">
+                        <span>编辑头像</span>
+                    </label>
+                    <input type="file" name="path" id="path" accept="image/jpeg,image/jpg,image/png" class="uploadimg" onchange="fileSelected(saveHeadimg)">
+                </div>
+                <div class="personal-info">
+                    <a href="javascript:;">星爷子行</a>
+                </div> -->
+            </div>
+            <div class="personal-menu">
+                <ul class="menu-list">
+                    <li class="menu-list-default current">
+                        <i></i>
+                        <a href="order.html">我的清单</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="history-order.html">历史清单</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="addlike-list.html">我的收藏</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="my-question.html">我的问答</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="account-setting.html">账号设置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="user-body">
+            <div class="user-middle-title">
+                <h2 class="middle-title">我的清单</h2>
+                <a href="javascript:;" class="fr alex-link-color create-order">创建清单</a>
+            </div>
+            <div class="user-middle-filter">
+                <div class="filter-title" id="filterLength"></div>
+                <div class="filter-wrap" style="display:none">
+                    <span>全部</span>
+                    <ul class="filter-droplist" style="display:none">
+                        <li class="current">
+                            <a href="javascript:;">全部</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">待提交</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">已提交</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="user-middle-con">
+                <div class="order-list">
+                    <ul>
+                    </ul>
+                    <div id="pagination1" class="page" style="text-align: center"></div>
+                </div>
+                <div class="noList">
+                    <p>亲，您还没有创建清单哦~
+                        <a href="javascript:;" class="create-order">快去添加吧</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="plugins/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.fileupload.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+    <script src="plugins/jquery-pagination/js/jquery.pagination.min.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script src="assets/do/user.js"></script>
+    <script>
+        var data = {
+            pageNum: getUrlParam('pageNum') || 1,
+            pageSize: getUrlParam('pageSize') || pageSize
+        }
+        $(function () {
+
+            getBillList()
+
+            //创建清单
+            $('.create-order').click(function () {
+                //prompt层
+                layer.prompt({
+                    title: '创建清单',
+                    formType: 0
+                }, function (text, index) {
+                    $.get(frontContextPath + '/order/createBill.do', {
+                        billName: text
+                    }, function (res) {
+                        if (res.responeCode == '0') {
+                            layer.close(index);
+                            layer.msg('清单创建成功', {
+                                icon: 1,
+                                time: 2000
+                            }, function () {
+                                location.reload()
+                            });
+                        } else {
+                            layer.msg(res.responeMsg, {
+                                icon: 2,
+                                time: 2000
+                            })
+                        }
+                    })
+                });
+            })
+
+            //编辑清单
+            $('body').on('click', '.edit-order', function () {
+                var title = $(this).attr('data-orderTitle')
+                var billId = $(this).attr('data-billid')
+                //prompt层
+                layer.prompt({
+                    title: '编辑清单',
+                    formType: 0,
+                    value: title
+                }, function (text, index) {
+                    if (text == title) {
+                        layer.msg('请输入新清单名', {
+                            icon: 2,
+                            time: 2000
+                        });
+                        return;
+                    }
+                    $.get(frontContextPath + '/order/editBill.do', {
+                        billId: billId,
+                        billName: text
+                    }, function (res) {
+                        if (res.responeCode == '0') {
+                            layer.close(index);
+                            layer.msg('清单编辑成功', {
+                                icon: 1,
+                                time: 2000
+                            }, function () {
+                                location.reload()
+                            });
+                        } else {
+                            layer.msg(res.responeMsg)
+                        }
+                    })
+                });
+            })
+
+            //删除清单        
+            $('body').on('click', '.delete-order', function () {
+                var billId = $(this).attr('data-billid')
+                if ($(this).attr('data-len') != '0') {
+                    //询问框
+                    layer.confirm('确定删除此清单？<br/>清单内容也将会同步移除', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function () {
+                        $.post(frontContextPath + '/order/deleteBill.do?billId=' + billId,
+                            function (res) {
+                                if (res.responeCode == '0') {
+                                    layer.msg('清单删除成功', {
+                                        icon: 1,
+                                        time: 2000
+                                    }, function () {
+                                        location.reload()
+                                    });
+                                } else {
+                                    layer.msg(res.responeMsg);
+                                }
+                            })
+                    });
+                } else {
+                    $.post(frontContextPath + '/order/deleteBill.do?billId=' + billId, function (res) {
+                        if (res.responeCode == '0') {
+                            layer.msg('清单删除成功', {
+                                icon: 1,
+                                time: 2000
+                            }, function () {
+                                location.reload()
+                            });
+                        } else {
+                            layer.msg(res.responeMsg);
+                        }
+                    })
+                }
+            })
+
+            //功能暂未开放
+            $('.filter-wrap').mouseenter(function () {
+                $('.filter-droplist').show()
+            })
+            $('.filter-wrap').mouseleave(function () {
+                $('.filter-droplist').hide()
+            })
+            $('.filter-droplist li').click(function () {
+                $(this).addClass('current').siblings('li').removeClass('current')
+                $('.filter-droplist').hide()
+            })
+
+        })
+        //获取清单列表
+        function getBillList() {
+            $.get(frontContextPath + '/order/getBillList.do',data, function (res) {
+                if (res.responeCode == '0') {
+                    var info = res;
+                    res = res.data.billList;
+                    if (res.length > 0) {
+                        $('#filterLength').text('共创建' + info.data.total + '个清单')
+                        var result = ''
+                        res.forEach(function (val) {
+                            var thumb_img = ''
+                            if (val.goodsList.length > 0) {
+                                val.goodsList.forEach(function (imgVal, index) {
+                                    if (index < 4) {
+                                        thumb_img += '<div class="card-album-aspect">' +
+                                            '<img src="' + imgVal.goodsImg + '" alt="">' +
+                                            '</div>';
+                                    }
+                                })
+                            }
+                            result += '<li>' +
+                                '<div class="order-img">' +
+                                '<a href="order-detail.html#' + val.billId + '">' + thumb_img + '</a>' +
+                                '</div>' +
+                                '<div class="order-info">' +
+                                '<div class="order-title">' +
+                                '<span>' + val.billName + '</span>' +
+                                '</div>' +
+                                '<div class="order-share">' +
+                                '<span>' + isCurYear(val.createDate) + ' 创建</span>' +
+                                '<span class="fr">' + val.goodsList.length + '件商品</span>' +
+                                '</div>' +
+                                '</div>' +
+                                '<div class="order-edit-box">' +
+                                '<span class="edit-samllbtn"></span>' +
+                                '<div class="edit-ul">' +
+                                '<a href="javascript:;" class="edit-order" data-orderTitle="' + val.billName +
+                                '" data-billid="' + val.billId + '">编辑清单</a>' +
+                                '<a href="javascript:;" class="delete-order" data-billid="' + val.billId +
+                                '" data-len="' + val.goodsList.length + '">删除</a>' +
+                                '</div>' +
+                                '' +
+                                '</div>' +
+                                '</li>'
+
+                        })
+                        $('.order-list ul').html(result)
+
+                        //DOM操作：显示编辑和删除按钮
+                        $('.order-edit-box').mouseenter(function () {
+                            $(this).find('.edit-ul').show()
+                        })
+                        //DOM操作：隐藏编辑和删除按钮
+                        $('.order-edit-box').mouseleave(function () {
+                            $(this).find('.edit-ul').hide()
+                        })                       
+
+                        $("#pagination1").pagination({
+                            currentPage: parseInt(data.pageNum),
+                            totalPage: info.data.pages,
+                            callback: function (current) {
+                                data.pageNum = current                               
+                                PostRequest(data)    
+                            }
+                        });                        
+
+                    } else {
+                        $('.noList').show()
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

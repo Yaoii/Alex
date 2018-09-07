@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>注册</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/user/login.css" />
+</head>
+
+<body>
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="user-wrap jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>                       
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+    <div id="wrapper">
+        <div class="aw-login-box" style="width:420px">
+            <div class="box-bg-ys" style="margin-left:325px"></div>
+            <div class="mod-body clearfix">
+                <div class="content pull-left">
+                    <h1 class="logo">
+                        <a href="">注册</a>
+                    </h1>
+                    <form id="login_form" method="post" onSubmit="return false" action="javascript:;">
+                        <ul>
+                            <li>
+                                <input type="text" autocomplet="off" id="mobile" class="form-control" placeholder="手机号">
+                            </li>
+                            <li>
+                                <div class="send-code">
+                                    <input type="text" autocomplet="off" class="form-control" placeholder="验证码" id="verifyCode">
+                                    <a href="javascript:;" onclick="getCode()" id="getCodebtn">获取验证码</a>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="posR">
+                                    <input type="password" id="password" class="form-control" placeholder="密码">
+                                    <i class="icon-eye"></i>
+                                </div>
+
+                            </li>
+                            <li class="alert vhide error_message">
+                                <em>1</em>
+                                <i class="icon icon-delete error-delete"></i>
+                            </li>
+                            <li class="last">
+                                <a href="javascript:;" class="pull-center btn btn-large btn-primary" id="submitReg">注册</a>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            </div>
+            <div class="mod-footer">
+                <span>已有账号?</span>&nbsp;&nbsp;
+                <a href="login.html">登录</a>&nbsp;&nbsp;
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script>
+        //注册
+        (function () {
+            var hFlag = true
+            $('#submitReg').click(function () {
+                if (!hFlag) return;
+                var self = $(this);
+                var mobile = $.trim($('#mobile').val())
+                var code = $.trim($('#verifyCode').val())
+                var password = $.trim($('#password').val())
+                if (mobile == '') {
+                    $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                    $('.error_message em').text('手机号不能为空')
+                    $('.error_message').css('visibility', 'visible')
+                    return;
+                }
+                if (isMobileAvailable(mobile)) {
+                    $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                    $('.error_message em').text('手机号格式不对')
+                    $('.error_message').css('visibility', 'visible')
+                    return;
+                }
+                if (code == '') {
+                    $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                    $('.error_message em').text('验证码不能空')
+                    $('.error_message').css('visibility', 'visible')
+                    return
+                }
+                if (password == '') {
+                    $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                    $('.error_message em').text('密码不能空')
+                    $('.error_message').css('visibility', 'visible')
+                    return
+                }
+
+                if (password.length<6) {
+                    $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                    $('.error_message em').text('密码不能少于6位')
+                    $('.error_message').css('visibility', 'visible')
+                    return
+                }
+                $('.error_message').css('visibility', 'hidden')
+                hFlag = false;
+                self.text('注册中...')
+                $.post(frontContextPath + '/wechat/pcRegister.do?code=' + code + '&password=' + password +
+                    '&phone=' + mobile,
+                    function (res) {
+                        if (res.responeCode == '0') {
+                            res.responeMsg = '注册信息已提交,等待管理员审核..';
+                            //location.href = "login.html"
+                        } else {
+                            res.responeMsg = setCodeMsg(res.responeCode, res.responeMsg)
+                            self.text('注册')
+                            $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                            $('.error_message em').text(res.responeMsg)
+                            $('.error_message').css('visibility', 'visible')
+                        }
+                        hFlag = true;
+                    })
+            })
+
+            $('.icon-eye').click(function () {
+                if ($(this).hasClass('icon-eye-closed')) {
+                    $(this).removeClass('icon-eye-closed')
+                    $('#password').prop('type', 'password')
+                } else {
+                    $(this).addClass('icon-eye-closed')
+                    $('#password').prop('type', 'text')
+                }
+            })
+            $('.error-delete').click(function () {
+                $(this).parent().css('visibility', 'hidden')
+            })
+
+        })()
+
+
+        //发送验证码
+        function getCode() {
+            var mobile = $.trim($('#mobile').val())
+            if (mobile == '') {
+                $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                $('.error_message em').text('手机号不能空')
+                $('.error_message').css('visibility', 'visible')
+                return;
+            }
+            if (isMobileAvailable(mobile)) {
+                $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                $('.error_message em').text('手机号格式不对')
+                $('.error_message').css('visibility', 'visible')
+                return;
+            }
+            $('.error_message').css('visibility', 'hidden')
+            $('#getCodebtn').removeAttr('onclick').css('cursor', 'default')
+            $.post(frontContextPath + '/wechat/sendValidateCode.do?phone=' + mobile, function (res) {
+                if (res.responeCode == '0') {
+                    res.responeMsg = '验证码发送成功';
+                    $('.error_message').addClass('alert-success').removeClass('alert-danger')
+                    cutDowm()
+                } else {
+                    res.responeMsg = setCodeMsg(res.responeCode, res.responeMsg)
+                    $('.error_message').addClass('alert-danger').removeClass('alert-success')
+                    $('#getCodebtn').attr('onclick', 'getCode()').css('cursor', 'pointer')
+                }
+                $('.error_message em').text(res.responeMsg)
+                $('.error_message').css('visibility', 'visible')
+            })
+        }
+        //60s倒计时
+        function cutDowm() {
+            var btn = $('#getCodebtn');
+            var count = 60;
+            var timer = null;
+            timer = setInterval(function () {
+                count--;
+                if (count > 0) {
+                    btn.text(count + 'S')
+                } else {
+                    clearInterval(timer);
+                    btn.text("获取验证码").removeAttr('disabled style')
+                    $('#getCodebtn').attr('onclick', 'getCode()')
+                }
+            }, 1000);
+        }
+
+        function setCodeMsg(code, msg) {
+            if (code == '313') {
+                return '该手机号已注册审核中...'
+            } else if (code == '315') {
+                return '该手机号已注册成功，可以直接登录'
+            } else if (code == '314') {
+                return '该手机号已注册审核未通过'
+            } else {
+                return msg
+            }
+        }
+    </script>
+</body>
+
+</html>

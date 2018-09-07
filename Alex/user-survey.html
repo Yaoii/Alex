@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
+    />
+    <title>问卷调查</title>
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/survey/survey.css?v=2.0" />
+    <link rel="stylesheet" href="assets/css/survey/mobilesurvey.css" />
+</head>
+
+<body>
+
+    <div id="jqContent">
+        <div id="mainCss">
+            <div class="survey">
+                <div class="surveyhead">
+                    <h1>亚力山大问卷调查</h1>
+                </div>
+                <div id="LIST">
+                    <div class="survey-page">
+                        <div class="survyhead-info">
+                            <p>尊敬的业主：</p>
+                            <p style="text-indent:2em">您好！非常荣幸您选择亚力山大，为了准确把握您需要的家居风格，满足您的家居功能要求，为您提供完善的服务，我们的设计师需要对您的喜好有所了解。同时非常感谢您的密切配合！我们会精心为您定制房间的每一物件，同时记录您的意见与要求，为您提供完整家居方案。
+                            </p>
+                            <p style="text-indent:2em">以下为纯服务调查，所有的资料我们会做好保密工作，敬请放心！
+                            </p>
+                        </div>
+                        <div class="surveycontent"></div>
+                        <div class="surveybtn">
+                            <a href="javascript:;" onclick="goPage(2)">下一页</a>
+                            <p class="page">第1页，共3页</p>
+                        </div>
+                    </div>
+                    <div class="survey-page">
+                        <div class="surveycontent">
+                            <!-- <div class="div-question  optional-question" id="branchQuestion">
+                                <div class="question-title-all">
+                                    <div class="question-num">5.</div>
+                                    <div class="question-title">您更倾向于哪一种服务内容？
+                                        <span class="req">*</span>
+                                    </div>
+                                </div>
+                                <div class="div_table_radio_question">
+                                    <ul class="ulradiocheck">
+                                        <li>
+                                            <a href="javascript:;" class="jqRadio" value="3" isBranch="1"></a>
+                                            <label>定制家具</label>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:;" class="jqRadio" value="4" isBranch="1"></a>
+                                            <label for="q1_2">整体配套（含设计软装）</label>
+                                        </li>
+                                        <div style="clear:both;"></div>
+                                    </ul>
+                                    <div class="errorMessage"></div>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="surveybtn">
+                            <a href="javascript:;" onclick="goPage(1)">上一页</a>
+                            <a href="javascript:;" onclick="goLastPage()">下一页</a>
+                            <p class="page">第2页，共3页</p>
+
+                        </div>
+                    </div>
+                    <div class="survey-page">
+                        <div class="surveycontent"></div>
+                        <div class="surveybtn">
+                            <a href="javascript:;" onclick="goPage(2)">上一页</a>
+                            <a href="javascript:;" onclick="submitAnswer()">提交</a>
+                            <p class="page">第3页，共3页</p>
+                        </div>
+                    </div>
+                    <div class="survey-page">
+                        <div class="surveycontent"></div>
+                        <div class="surveybtn">
+                            <a href="javascript:;" onclick="goPage(2)">上一页</a>
+                            <a href="javascript:;" onclick="submitAnswer()">提交</a>
+                            <p class="page">第3页，共3页</p>
+                        </div>
+                    </div>
+                    <div class="survey-page" id="last-page">
+                        <div class="surveycontent">
+                            <div class="survey-success">
+                                <p>
+                                    提交成功，感谢您的耐心填写！
+                                </p>
+                            </div>
+                            <div class="surveybtn">
+                                <a href="javascript:;" onclick="location.reload()" style="background-color:#abc52c">返回</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="assets/js/surveyBase.js"></script>
+    <script>
+        /**
+         *page: 当前页数,默认第1页
+         *pageNum:每页的题目数量
+         */
+        var roleId = getUrlParam('roleId'), //用户角色
+            userId = getUrlParam('userId'), //记录用户Id
+            page = 1,
+            pageNum = {
+                0: 0,
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0
+            };
+        $(function () {
+            var wh = $(window).height()
+            $('#mainCss').css('min-height', (wh - 200) + 'px')
+            //获取所有问题          
+            $.get(publicContextPath + '/question/queryQuestion.do?roleId=' + roleId,
+                function (res) {
+                    if (res.responeCode == '0') {
+                        getQuestion(res.data)
+                    } else {
+                        layer.msg(res.responeMsg)
+                    }
+                })
+            //Dom事件
+            $('body').on('input', '.jqInput', function () {
+                if ($(this).val() != '') {
+                    $(this).addClass('jqChecked')
+                    $(this).closest('.div-question').css('border-color', 'white')
+                }
+            })
+        })
+        // 提交问题
+        function submitAnswer() {
+            if (submitSurvey()) {
+                var answerList = [];
+                var branchPage = 0
+                if ($('.survey-page').eq(1).find('.jqChecked').eq(0).parent('li').index() == 0) {
+                    branchPage = 3
+                } else {
+                    branchPage = 4
+                }
+                $('.div-question').each(function () {
+                    var questionType = $(this).attr('questiontype');
+                    var questionId = $(this).attr('questionid');
+                    var questionPage = $(this).attr('questionPage');
+                    if (questionPage != branchPage && questionPage > 2) {
+                        return;
+                    }
+                    if (questionType == '1') {
+                        //单选    
+                        var optionItem = $(this).find('.jqChecked')
+                        var optionType = optionItem.attr('optionType')
+                        var optionId = optionItem.attr('optionid')
+                        if (optionType == '2') {
+                            answerList.push({
+                                optionId: optionId,
+                                questionId: questionId,
+                                remarks: optionItem.siblings('.underline').val()
+                            })
+                        } else {
+                            answerList.push({
+                                optionId: optionId,
+                                questionId: questionId
+                            })
+                        }
+                    } else if (questionType == '2') {
+                        //多选
+                        var optionItem = $(this).find('.jqChecked');
+                        optionItem.each(function () {
+                            var optionType = $(this).attr('optionType')
+                            var optionId = $(this).attr('optionid')
+                            if (optionType == '2') {
+                                answerList.push({
+                                    optionId: optionId,
+                                    questionId: questionId,
+                                    remarks: $(this).siblings('.underline').val()
+                                })
+                            } else {
+                                answerList.push({
+                                    optionId: optionId,
+                                    questionId: questionId
+                                })
+                            }
+                        })
+                    } else if (questionType == '3') {
+                        var _remark = $.trim($(this).find('.jqInput').val())
+                        answerList.push({
+                            remarks: _remark,
+                            questionId: questionId
+                        })
+                    } else if (questionType == '4') {
+                        var _remark = $.trim($(this).find('.jq-textarea').val())
+                        answerList.push({
+                            remarks: _remark,
+                            questionId: questionId
+                        })
+                    }
+                })
+                //提交问卷 入参
+                var data = {}
+                if (userId) {
+                    data = {
+                        answerList: answerList,
+                        roleId: roleId,
+                        userId: userId
+                    }
+                } else {
+                    data = {
+                        answerList: answerList,
+                        roleId: roleId
+                    }
+                }
+                $.ajax({
+                    url: publicContextPath + '/question/submitQuestion.do',
+                    data: JSON.stringify(data),
+                    type: 'post',
+                    success: function (res) {
+                        if (res.responeCode == '0') {
+                            $('.survey-page').eq(page - 1).hide()
+                            $('#last-page').show()
+                        } else {
+                            layer.msg('提交失败');
+                        }
+                    }
+                })
+            }
+        }
+
+        //判断是否有必选项没填，有则返回到第一个没填的必选项
+        function submitSurvey() {
+            var firstNoCheck = 0; //第一个没选择的必填项
+            var pagediv = $('.survey-page').eq(page - 1);
+            if (pagediv.find('.optional-question').length > 0) {
+                //必填项>0             
+                pagediv.find('.optional-question').each(function () {
+                    var self = $(this);
+                    var select_item = self.find('.jqChecked');
+                    if (select_item.length == 0) {
+                        if (firstNoCheck == 0) {
+                            firstNoCheck = $(this).position().top
+                        }
+                        self.css('border-color', '#f58817de')
+                    } else {
+                        select_item.each(function () {
+                            if ($(this).siblings('input').val() == '') {
+                                if (firstNoCheck == 0) {
+                                    firstNoCheck = self.position().top
+                                }
+                                $(this).siblings('input').css('border-color', '#f58817de');
+                                self.css('border-color', 'white')
+                            }
+                        })
+                    }
+                })
+            }
+            if (firstNoCheck != 0) {
+                $("html").animate({
+                    scrollTop: firstNoCheck
+                }, 0);
+                return false
+            } else {
+                return true;
+            }
+        }
+
+        //跳到指定的页面
+        function goPage(i) {
+            if (i < page) {
+                page = i;
+                $('.survey-page').hide().eq(page - 1).show()
+                $("html").animate({
+                    scrollTop: 0
+                }, 0);
+            } else {
+                if (submitSurvey()) {
+                    page = i;
+                    $('.survey-page').hide().eq(page - 1).show()
+                    $("html").animate({
+                        scrollTop: 0
+                    }, 0);
+                }
+            }
+        }
+
+        //第二页的下一页跳转
+        function goLastPage() {
+            if (submitSurvey()) {
+                //如果分支题选中的是第1个则跳转到第3页，否则跳转到第4页                
+                if ($('.survey-page').eq(1).find('.jqChecked').eq(0).parent('li').index() == 0) {
+                    page = 3
+                } else {
+                    page = 4
+                }
+                $('.survey-page').hide().eq(page - 1).show()
+                $("html").animate({
+                    scrollTop: 0
+                }, 0);
+            }
+        }
+
+        //根据输入的内容动态改变input的宽度
+        function lengthChange(a) {
+            var b = a.value.length,
+                c = a.size;
+            b >= c && 80 >= c && (a.size = b + 2)
+        }
+
+        //遍历问题
+        function getQuestion(info) {
+            if (info.length > 0) {
+                var result = '';
+                var flag = true; //判断是否是第二页的第一个问题
+                info.forEach(function (val, index) {
+                    pageNum[val.page]++;
+                    var curNum = 0;
+                    var k = val.page == 4 ? (val.page - 1) : val.page;
+                    for (var i = 1; i < k; i++) {
+                        curNum += pageNum[i]
+                    }
+                    curNum += pageNum[val.page]
+                    var itemHtml = ''
+                    if (val.need == '1') {
+                        val.need = 'optional-question';
+                        val.content += '<span class="req">*</span>'
+                    } else {
+                        val.need = 'val.content'
+                    }
+                    if (val.answerType == '1') {
+                        //*****************************************单选
+                        var radioItem = '';
+                        val.optionList.forEach(function (subval) {
+                            var optionType = subval.type;
+                            if (subval.type == '2') {
+                                //选项带文本
+                                subval.type =
+                                    '<input type="text" class="underline" size="20" style="display:inline-block;max-width: 500px; position: static;"  onpropertychange="lengthChange(this);" oninput="lengthChange(this);"/>'
+                            } else {
+                                subval.type = ''
+                            }
+                            if (subval.picArray && subval.picArray.length > 0) {
+                                //单选+文字图片                            
+                                radioItem += '<li class="type-img">' +
+                                    '<img src="' + subval.picArray[0].fullUrl +
+                                    '" ><i class="icon-zoom"></i>' +
+                                    '<div>' +
+                                    '<a href="javascript:;" class="jqRadio" optionId="' + subval.id +
+                                    '" optionType="' + optionType + '" isBranch="' + val.isBranch +
+                                    '"></a>' +
+                                    '<label>' +
+                                    '<span>' + subval.content + '</span>' +
+                                    '</label>' + subval.type +
+                                    '</div>' +
+                                    '</li>'
+                            } else {
+                                //单选+文字
+                                radioItem += '<li>' +
+                                    '<a href="javascript:;" class="jqRadio" optionId="' + subval.id +
+                                    '" optionType="' + optionType + '" isBranch="' + val.isBranch +
+                                    '"></a>' +
+                                    '<label>' + subval.content + '</label>' + subval.type +
+                                    '</li>'
+                            }
+                        })
+                        itemHtml = '<ul class="ulradiocheck">' +
+                            radioItem +
+                            '<div style="clear:both;"></div>' +
+                            '</ul>'
+                    } else if (val.answerType == '2') {
+                        //*****************************************多选
+                        var checkboxItem = '';
+                        val.optionList.forEach(function (subval) {
+                            var optionType = subval.type;
+                            if (subval.type == '2') {
+                                //选项带文本
+                                subval.type =
+                                    '<input type="text" class="underline" size="20" style="display:inline-block;max-width: 500px; position: static;"  onpropertychange="lengthChange(this);" oninput="lengthChange(this);"/>'
+                            } else {
+                                subval.type = ''
+                            }
+                            if (subval.picArray && subval.picArray.length > 0) {
+                                //多选带图片                            
+                                checkboxItem += '<li class="type-img">' +
+                                    '<img src="' + subval.picArray[0].fullUrl +
+                                    '" ><i class="icon-zoom"></i>' +
+                                    '<div>' +
+                                    '<a href="javascript:;" class="jqCheckbox" optionId="' + subval.id +
+                                    '" optionType="' + optionType + '"></a>' +
+                                    '<label>' +
+                                    '<span>' + subval.content + '</span>' +
+                                    '</label>' + subval.type +
+                                    '</div>' +
+                                    '</li>'
+                            } else {
+                                //多选+文字
+                                checkboxItem += '<li>' +
+                                    '<a href="javascript:;" class="jqCheckbox" optionId="' + subval.id +
+                                    '" optionType="' + optionType + '"></a>' +
+                                    '<label>' + subval.content + '</label>' + subval.type +
+                                    '</li>'
+                            }
+                        })
+                        itemHtml = '<ul class="ulradiocheck">' +
+                            checkboxItem +
+                            '<div style="clear:both;"></div>' +
+                            '</ul>'
+                    } else if (val.answerType == '3') {
+                        //*****************************************小文本框
+                        itemHtml = '<input type="text" class="jqInput">'
+                    } else if (val.answerType == '4') {
+                        //*****************************************大文本框
+                        itemHtml = '<textarea class="jq-textarea"></textarea>'
+                    }
+
+                    var _divshow = 'block';
+
+                    if (val.page == '2' && val.isBranch == '0') {
+                        _divshow = 'none'
+                    }
+                    result = '<div class="div-question ' + val.need + '" questionId="' + val.id +
+                        '" questionType="' + val.answerType + '" questionPage="' + val.page +
+                        '" style="display:' + _divshow + '">' +
+                        '<div class="question-title-all">' +
+                        '<div class="question-num">' + curNum + '.</div>' +
+                        '<div class="question-title">' + val.content +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="div_table_radio_question">' + itemHtml +
+                        '<div class="errorMessage"></div>' +
+                        '</div>' +
+                        '</div>';
+                    $('.survey-page').eq((val.page - 1)).find('.surveycontent').append(result)
+                })
+                $('.survey-page').eq(0).show()
+
+                //Dom选中
+                $('.ulradiocheck li').click(function () {
+                    var _div = $(this).find('a');
+                    if (_div.hasClass('jqRadio')) {
+                        if (_div.hasClass('jqChecked')) {
+                            _div.removeClass('jqChecked')
+                            if (_div.attr('isBranch')) {
+                                $(this).closest('.div-question').siblings('.div-question').hide()
+                            }
+                        } else {
+                            _div.addClass('jqChecked')
+                            $(this).siblings('li').find('a').removeClass('jqChecked')
+                            if (_div.attr('isBranch')) {
+                                $(this).closest('.div-question').siblings('.div-question').show()
+                            }
+                        }
+                    } else {
+                        _div.toggleClass('jqChecked')
+                    }
+                    $(this).closest('.div-question').css('border-color', 'white')
+                    $(this).closest('.div-question').find('.underline').css('border-color', '#cdcdcd')
+                })
+
+                //其他项目的文本输入
+                $('.underline').on('click', function (e) {
+                    e.stopPropagation()
+                    $(this).css('border-color', '#cdcdcd')
+                    $(this).siblings('a').addClass('jqChecked')
+                    if ($(this).siblings('a').hasClass('jqRadio')) {
+                        $(this).parent().siblings('li').find('a').removeClass('jqChecked')
+                    }
+                })
+
+                //点击查看大图
+                $('.type-img .icon-zoom').click(function () {
+                    layer.open({
+                        title: '',
+                        type: 1,
+                        anim: 2,
+                        shadeClose: true, //开启遮罩关闭
+                        content: '<div id="prewBigImg">' +
+                            '<img src="' + $(this).siblings('img').attr('src') + '" width="100%">' +
+                            '</div>'
+                    });
+                })
+            }
+        }
+    </script>
+
+</body>
+
+</html>

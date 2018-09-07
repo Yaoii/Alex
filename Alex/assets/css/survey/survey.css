@@ -1,0 +1,370 @@
+@media (max-width: 700px){
+    .surveyhead h1 {
+    font-size: 12px !important;
+    font-weight: bold;
+    color: #19a8ee;
+    vertical-align: middle;
+    margin: 0;
+    padding: 15px 0;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+    #jqContent {
+        width: 920px;
+        background: url(../../img/oldbg2.jpg) no-repeat top center;
+        padding-top: 105px;
+        float: left;
+    }
+}
+body {
+    background: #ddf4ff url(../../img/oldbg2-bg.jpg) repeat-x !important;
+    padding: 0;
+    margin: 0
+}
+
+a {
+    text-decoration: none
+}
+
+input,
+textarea {
+    outline: none
+}
+
+ul,
+p,
+h3,
+h4,
+h5 {
+    margin: 0;
+    padding: 0
+}
+
+#jqContent {
+    width: 920px;
+    background: url(../../img/oldbg2.jpg) no-repeat top center;
+    padding-top: 105px;
+    margin: 0 auto;
+}
+
+#mainCss {
+    background-color: white;
+    width: 920px;
+    margin: 0 auto;
+}
+
+.survey {
+    width: 780px;
+    line-height: 20px;
+    word-wrap: break-word;
+    padding: 0;
+    margin: 0 auto;
+    padding-bottom: 50px
+}
+
+.surveyhead {
+    line-height: 20px;
+    width: 96%;
+    padding: 40px 2% 30px;
+}
+
+.surveyhead h1 {
+    font-size: 20px !important;
+    font-weight: bold;
+    color: #19a8ee;
+    vertical-align: middle;
+    margin: 0;
+    padding: 15px 0;
+    line-height: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.survyhead-info {
+    margin: -20px 20px 20px 20px;
+}
+
+.survyhead-info p {
+    text-align: left;
+    line-height: 1.5;
+    font-size: 13px;
+    font-weight: normal;
+    color: #666666;
+    margin-bottom: 5px;
+}
+
+.surveycontent {
+    margin: 0;
+    width: 100%;
+}
+
+.survey-page {
+    display: none
+}
+
+.div-question {
+    border: 1px solid white;
+    padding: 4px;
+    clear: both;
+    margin: 2px auto 10px;
+    width: 96%;
+    height: auto;
+}
+
+.question-title-all {
+    padding-top: 2px;
+    font-size: 15px;
+    color: #444444;
+    font-weight: bold;
+    height: auto;
+    line-height: 20px;
+    position: relative;
+}
+
+.question-num {
+    width: 28px;
+    float: left;
+}
+
+.question-title {
+    overflow: hidden;
+    zoom: 1;
+}
+
+span.req {
+    color: red;
+    font-weight: bold;
+}
+
+.div_table_radio_question {
+    clear: both;
+    padding-top: 5px;
+    padding-left: 24px;
+    padding-bottom: 2px;
+    border-bottom: 1px solid #EFEFEF;
+    font-size: 15px;
+    color: #333333;
+    _padding-left: 27px;
+}
+
+.div_table_radio_question ul {
+    clear: both;
+    overflow: hidden
+}
+
+.div_table_radio_question li {
+    float: left;
+    list-style-type: none;
+    margin-bottom: 2px;
+}
+
+.ulradiocheck li {
+    line-height: 30px;
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+}
+
+.div_table_radio_question li.type-img {
+    width: auto !important;
+    text-align: center;
+    margin-right: 30px;
+    margin-top: 10px;
+    position: relative;
+    padding-bottom: 30px;
+}
+
+.div_table_radio_question li.type-img .jqCheckbox {
+    top: 156px !important;
+}
+
+.ulradiocheck li:hover {
+    background-color: #efefef
+}
+
+.div_table_radio_question li.type-img .underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: block;
+    padding: 0;
+    border: 1px solid #cdcdcd;
+    line-height: 26px;
+    /* display: none */
+}
+
+.div_table_radio_question li.type-img img {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: block;
+}
+
+.div_table_radio_question li.type-img .icon-zoom {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: url(../../img/icon-zoom.png) 0 0 no-repeat;
+    background-size: 20px auto;
+    z-index: 9;
+}
+
+.ulradiocheck li label {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    -moz-user-select: none;
+    /*火狐*/
+    -webkit-user-select: none;
+    /*webkit浏览器*/
+    -ms-user-select: none;
+    /*IE10*/
+    -khtml-user-select: none;
+    /*早期浏览器*/
+    user-select: none;
+}
+
+.jqRadio {
+    background: transparent url(../../img/radio.gif) no-repeat;
+    vertical-align: middle;
+    height: 16px;
+    width: 18px;
+    _font-size: 10px;
+    display: inline-block;
+}
+
+.jqCheckbox {
+    background: transparent url(../../img/checkbox.gif) no-repeat;
+    vertical-align: middle;
+    height: 16px;
+    width: 18px;
+    _font-size: 10px;
+    display: inline-block;
+}
+
+.jqChecked {
+    background-position: 0 -16px;
+}
+
+.jqInput {
+    line-height: 24px;
+    margin-left: 5px;
+    width: 90%;
+    ;
+    border: 1px solid #d2d2d2;
+    padding: 6px 8px;
+}
+
+.errorMessage {
+    color: Red;
+    margin-left: 20px;
+    height: 20px;
+}
+
+.qtypetip {
+    color: #0066FF;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.underline {
+    background-color: transparent;
+    padding: 3px;
+    _border-color: white;
+    border: solid 1px #cdcdcd;
+    color: #000;
+    margin-left: 5px;
+}
+
+.inputtext:focus,
+.underline:focus {
+    outline: none;
+    border: 1px solid #53a4f4;
+}
+
+.jq-textarea {
+    width: 90%;
+    height: 200px;
+    border: 1px solid #d2d2d2;
+    padding: 10px;
+    font-size: 14px
+}
+
+.surveybtn {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.surveybtn a {
+    width: 80px;
+    margin: 0 auto;
+    background: #19a8ee;
+    text-align: center;
+    border-radius: 5px;
+    padding: 6px 0;
+    cursor: pointer;
+    color: #fff;
+    display: inline-block;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.surveybtn a:nth-of-type(2) {
+    margin-left: 30px;
+}
+
+.surveybtn .page {
+    text-align: center;
+    margin-top: 10px;
+    height: 20px;
+    line-height: 20px;
+    color: #999;
+    font-size: 14px
+}
+
+#prewBigImg {
+    margin: 0 auto;
+}
+
+#prewBigImg img {
+    width: 100%;
+    display: block
+}
+
+.survey-success p {
+    text-align: center;
+    color: #aec52d;
+    font-size: 14px;
+    margin-bottom: 50px;
+}
+/* 角色 */
+ .survey-user-role {
+     text-align: center;
+     margin: 50px auto;
+     width: 80%;
+ }
+
+ .survey-user-role h4 {
+     line-height: 40px;
+     margin-bottom: 10px;
+ }
+
+ .survey-user-role a {
+     display: block;
+     color: #000;
+     border: 1px solid #ccc;
+     line-height: 46px;
+ }
+
+ .survey-user-role a:first-child {
+     border-bottom: none
+ }
+
+ .survey-user-role a:hover {
+     background-color: #67ccff;
+     color: #fff
+ }

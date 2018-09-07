@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>账号设置</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/user/usercenter.css" />
+
+</head>
+
+<body style="background-color:#f4f4f4">
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+                 <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+    <div class="user-wrap jwrap" style="margin-top:20px;">
+        <div class="user-sidebar fl">
+            <div class="personal-top" id="avator" style="height:120px"></div>
+            <div class="personal-menu">
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="order.html">我的清单</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="history-order.html">历史清单</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="addlike-list.html">我的收藏</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="my-question.html">我的问答</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default current">
+                        <i></i>
+                        <a href="account-setting.html">账号设置</a>
+                    </li>
+                </ul>
+            </div>            
+        </div>
+        <div class="user-body">
+            <div class="user-middle-title">
+                <h2 class="middle-title">账号信息</h2>
+            </div>
+            <div class="infoContent">
+                <div class="infoList">
+                    <div class="info-left">用户名</div>
+                    <div class="info-center" id="userName"></div>
+                    <button class="btn btn-yellow fr" onclick="modifyUserName()">修改</button>
+                </div>
+                <div class="infoList">
+                    <div class="info-left">登录密码</div>
+                    <div class="info-center">密码要求至少6位，建议您经常修改密码，以保证帐号更加安全。</div>
+                    <button class="btn btn-yellow fr" onclick="modifyPassword()">修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <!-- 弹窗 -->
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <!-- 上传图片 -->
+    <script src="plugins/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.fileupload.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+    <!-- 页面 -->
+    <script src="assets/js/base.js"></script>
+    <script src="assets/do/user.js"></script>
+
+    <script>
+        $(function () {
+            $('#userName').html(userinfo.name)
+        })
+        //修改用户名
+        function modifyUserName() {
+            layer.prompt({
+                title: '修改用户名',
+                formType: 0,
+                value: userinfo.name
+            }, function (text, index) {
+                if (text == userinfo.name) {
+                    layer.msg('亲，请输入新用户名', {
+                        icon: 2,
+                        time: 2000
+                    });
+                    return;
+                }
+                $.post(frontContextPath + '/user/userInfo/updateUserInfo.do?name=' + text, function (res) {
+                    if (res.responeCode == '0') {
+                        getUserInfo()
+                        layer.close(index);
+                        layer.msg('修改成功', {
+                            icon: 1,
+                            time: 1200
+                        }, function () {
+                            location.reload()
+                        });
+                    }
+                })
+            });
+        }
+        //修改密码
+        function modifyPassword() {
+
+            var html =
+                '<div><div style="padding-bottom:10px;">旧密码</div><input type="password" class="layui-layer-input"  id="oldPassword"/><div style="padding:10px 0;">新密码</div><input type="password" class="layui-layer-input"   id="newPassword"/></div>';
+
+            layer.prompt({
+                title: '请输入新密码',
+                formType: 1,
+                value: 1
+            }, function (text, index) {
+
+                var oldPassword = $.trim($('#oldPassword').val())
+                var newPassword = $.trim($('#newPassword').val())
+
+                if (oldPassword == '' || newPassword == '') {
+                    layer.msg('密码不能为空', {
+                        icon: 2,
+                        time: 2000
+                    });
+                    return;
+                }
+                if (oldPassword.length < 6 || newPassword.length < 6) {
+                    layer.msg('密码不能少于6位', {
+                        icon: 2,
+                        time: 2000
+                    });
+                    return;
+                }
+                if (oldPassword == newPassword) {
+                    layer.msg('两次密码不能一致', {
+                        icon: 2,
+                        time: 2000
+                    });
+                    return;
+                }
+                $.post(frontContextPath + '/wechat/updatePassword.do?loginName=' + userinfo.mobile +
+                    '&newPassword=' + newPassword + '&password=' + oldPassword,
+                    function (res) {
+                        if (res.responeCode == '0') {
+                            layer.close(index);
+                            layer.msg('保存成功', {
+                                icon: 1,
+                                time: 2000
+                            });
+                        } else {
+                            if (res.responeCode == '-1') {
+                                res.responeMsg = '原密码错误'
+                            }
+                            layer.msg(res.responeMsg, {
+                                icon: 2,
+                                time: 2000
+                            });
+                        }
+                    })
+            });
+            $('.layui-layer-content').html(html)
+
+        }
+    </script>
+
+
+
+</body>
+
+</html>

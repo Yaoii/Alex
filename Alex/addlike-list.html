@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>我的收藏</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/user/usercenter.css" />
+    <link rel="stylesheet" href="plugins/jquery-pagination/css/jquery.pagination.css" />
+
+</head>
+
+<body style="background-color:#f4f4f4">
+    <div class="header">
+        <div class="headertop_desc">
+            <div class="jwrap">
+                <div class="nav_list">
+                    <ul>
+                        <li>
+                            <a href="index.html">首页</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                        </li>
+                        <li>
+                            <a href="about.html">关于我们</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+    <!------------End Header ------------>
+    <div class="user-wrap jwrap mt-20">
+        <div class="user-sidebar fl">
+            <div class="personal-top" id="avator" style="height:120px"></div>
+            <div class="personal-menu">
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="order.html">我的清单</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="history-order.html">历史清单</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default current">
+                        <i></i>
+                        <a href="addlike-list.html">我的收藏</a>
+                    </li>
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="my-question.html">我的问答</a>
+                    </li>
+                </ul>
+                <ul class="menu-list">
+                    <li class="menu-list-default">
+                        <i></i>
+                        <a href="account-setting.html">账号设置</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="user-body">
+            <div class="user-middle-title">
+                <h2 class="middle-title">我的收藏</h2>
+            </div>
+            <div class="user-middle-filter">
+                <div class="filter-title" id="filterLength"></div>
+            </div>
+            <div class="user-middle-con">
+                <div class="order-list" id="order-prolist">
+                    <ul>
+                        <!--  <li>
+                            <div class="order-img">
+                                <a href="pro-detail.html">
+                                    <img src="upfile/b3.jpg" alt="" width="100%" height="100%">
+                                </a>
+                            </div>
+                            <div class="order-info border-none">
+                                <div class="order-title">
+                                    <a href="pro-detail.html">
+                                        <span>郗鉴：奋斗是最有力的武器</span>
+                                    </a>
+                                    <b>已选:1.5m+实木+红色</b>
+                                </div>
+                                <div class="order-share">
+                                    <i class="icon-share icon-like fr"></i>
+                                    <span>￥2862.00</span>
+                                </div>
+                            </div>
+                            <a href="javascript:;" class="remove-btn">移除</a>
+                        </li>     -->
+                    </ul>
+                    <div id="pagination1" class="page" style="text-align: center"></div>
+                </div>
+                <div class="noList">
+                    <p>亲，您的收藏夹空空如也~
+                        <a href="pro-list.html">快去看看吧</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="plugins/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.fileupload.js"></script>
+    <script src="plugins/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+    <script src="plugins/jquery-pagination/js/jquery.pagination.min.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script src="assets/do/user.js"></script>
+    <script>
+        var data = {
+            pageNum: getUrlParam('pageNum') || 1,
+            pageSize: getUrlParam('pageSize') || pageSize
+        }
+        $(function () {
+
+            getCollectionList()
+
+            //取消收藏
+            $('body').on('click', '.remove-btn', function (res) {
+                var _self = $(this);
+                var _id = $(this).attr('data-id')
+                $.post(frontContextPath + '/user/favorite/deleteCollection.do?goodsId=' + _id, function (
+                    res) {
+                    if (res.responeCode == '0') {
+                        layer.msg('取消收藏成功', {
+                            icon: 1,
+                            time: 800
+                        }, function () {
+                            $(_self).closest('li').remove()
+                            if ($('#order-prolist li').length == 0) {
+                                $('.noList').show()
+                            }
+                        })
+                    } else {
+                        layer.msg(res.responeMsg)
+                    }
+                })
+            })
+        })
+
+        //获取收藏列表
+        function getCollectionList() {
+            $.get(frontContextPath + '/user/favorite/getCollectionList.do',data, function (res) {
+                if (res.responeCode == '0') {
+                    var info = res
+                    res = res.data.collectionList
+                    if (res.length > 0) {
+                        $('#filterLength').text('共有' + info.data.total + '个收藏')
+                        var result = ''
+                        res.forEach(function (val) {
+                            //专业公司
+                            var isProfessionProduct = val.goodstype == '2' ?
+                                '<div class="mianfeibq"><img src="assets/img/mianfeibq.png"></div>' :
+                                '';
+                            result += '<li>' +
+                                '<div class="order-img">' +
+                                '<a href="pro-detail.html?id="' + val.goodsId + '">' +
+                                '<img src="' + val.goodsImg +
+                                '" alt="" width="100%" height="100%" class="scaleImg">' +
+                                '</a>' +
+                                '</div>' +
+                                '<div class="order-info border-none">' +
+                                '<div class="order-title">' +
+                                '<a href="pro-detail.html">' +
+                                '<span>' + val.goodsName + '</span>' +
+                                '</a>' +
+                                '</div>' +
+                                '</div>' +
+                                '<a href="javascript:;" class="remove-btn" data-id ="' + val.goodsId +
+                                '">取消收藏</a>' +
+                                isProfessionProduct +
+                                '</li>'
+                        })
+                        $('#order-prolist ul').html(result)
+                        //Dom事件
+                        $('.order-list li').hover(function () {
+                            $(this).find('.remove-btn').show();
+                        }, function () {
+                            $(this).find('.remove-btn').hide();
+                        })                      
+
+                        $("#pagination1").pagination({
+                            currentPage: parseInt(data.pageNum),
+                            totalPage: info.data.pages,
+                            callback: function (current) {
+                                data.pageNum = current 
+                                 PostRequest(data)                                 
+                            }
+                        });
+                    } else {
+                        $('.noList').show()
+                    }
+                } else {
+                    layer.msg(res.responeMsg)
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

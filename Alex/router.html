@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>前端路由实现</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            list-style: none;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        ul {
+            width: 500px;
+            margin: 100px auto;
+        }
+
+        li {
+            padding: 5px;
+            display: inline-block;
+            background-color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <ul>
+        <li><a href="#/">turn white</a></li>
+        <li><a href="#/red">turn red</a></li>
+        <li><a href="#/yellow">turn yellow</a></li>
+    </ul>
+    <script type="text/javascript">
+        //构造函数
+        function Router() {
+            this.routes = {};
+            this.currentUrl = '';
+        }
+        Router.prototype.route = function (path, callback) {
+            this.routes[path] = callback || function () {}; //给不同的hash设置不同的回调函数
+        };
+        Router.prototype.refresh = function () {
+            console.log(location.hash.slice(1)); //获取到相应的hash值
+            this.currentUrl = location.hash.slice(1) || '/'; //如果存在hash值则获取到，否则设置hash值为/
+            // console.log(this.currentUrl);
+            this.routes[this.currentUrl](); //根据当前的hash值来调用相对应的回调函数
+        };
+        Router.prototype.init = function () {
+            window.addEventListener('load', this.refresh.bind(this), false);
+            window.addEventListener('hashchange', this.refresh.bind(this), false);
+        }
+        //给window对象挂载属性
+        window.Router = new Router();
+        window.Router.init();
+        var content = document.querySelector('body');
+
+        function changeBgColor(color) {
+            content.style.backgroundColor = color;
+        }
+        Router.route('/', function () {
+            changeBgColor('white');
+        });
+        Router.route('/red', function () {
+            changeBgColor('red');
+        });
+        Router.route('/yellow', function () {
+            changeBgColor('yellow');
+        });
+    </script>
+</body>
+
+</html>

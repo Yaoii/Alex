@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery.Ajax IE8,9跨域</title>
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+</head>
+
+<body>
+    <script>
+        // jQuery.support.cors = true; //$ajax({}) 正常写
+        // $.post('http://ons.me/tools/dropload/json.php?page=1&size=5&t=' + new Date(), function (res) {
+        //     alert('调用成功')
+        //     alert(res)
+        // })
+        // $.ajax({
+        //     async: false,
+        //     type: 'get',
+        //     cache: false,            
+        //     url: "http://ons.me/tools/dropload/json.php?page=1&size=5",
+        //     success: function (data) {
+        //         alert('调用成功')
+        //         alert(typeof (data) + '1')
+        //         console.log(data.length)
+        //     },
+        //     error: function () {
+        //         alert("错误");
+        //     }
+        // });
+
+        // function promiseA() {
+        //     return new Promise(function (resolve, reject) {
+        //         reject(789);
+        //     });
+        // }
+
+        // promiseA().then(function (data) {
+        //     alert(data)
+        // })
+
+        //p2, p3与p1相似
+        //当doSomething()执行完毕的时候，调用resolve()
+        //使得当前promise状态转变为fulfilled即可
+        // var p1 = new Promise(function (resolve, reject) {
+        //     //do something here
+        //     //when do something done
+        //     resolve(123);
+        // });
+        // var p2 = new Promise(function (resolve, reject) {
+        //     //do something here
+        //     //when do something done
+        //     resolve(456);
+        // });
+        // var p3 = new Promise(function (resolve, reject) {
+        //     //do something here
+        //     //when do something done
+        //     resolve(789);
+        // });
+
+        // p1.then(function (data) {
+        //     console.log(data)
+        //     return p2
+        // }).then(function (data) {
+        //     console.log(data)
+        //     return p3
+        // }).catch()
+
+
+        // 方法1
+            let promise = new Promise((resolve, reject) => {
+                if (success) {
+                    resolve(a) // pending ——> resolved 参数将传递给对应的回调方法
+                } else {
+                    reject(err) // pending ——> rejectd
+                }
+            })
+
+            // 方法2
+            function promise() {
+                return new Promise(function (resolve, reject) {
+                    if (success) {
+                        resolve(a)
+                    } else {
+                        reject(err)
+                    }
+                })
+            }
+
+    </script>
+</body>
+
+</html>

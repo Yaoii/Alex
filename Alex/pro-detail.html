@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="assets/js/mobile.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <title>亚力山大家具家居，做最好的自己</title>
+    <meta name="Keywords" content="亚力山大家具家居，做最好的自己" />
+    <meta name="Description" content="亚力山大家具家居，做最好的自己" />
+    <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="assets/css/global.css" />
+    <link rel="stylesheet" href="assets/css/product/product.css" />
+</head>
+
+<body>
+    
+    <div>
+        <div class="header">
+            <div class="headertop_desc">
+                <div class="user-wrap jwrap">
+                    <div class="nav_list">
+                        <ul>
+                            <li>
+                                <a href="index.html">首页</a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" onclick="goSurvey()">问卷调查</a>
+                            </li>                           
+                            <li>
+                                <a href="about.html">关于我们</a>
+                            </li>
+                        </ul>
+                    </div>
+                     <div class="account_desc">
+                    <ul>
+                        <li>
+                            <a href="register.html">注册</a>
+                        </li>
+                        <li>
+                            <a href="login.html">登录</a>
+                        </li>
+                    </ul>
+                </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+        <!------------End Header ------------>
+        <div class="innerimg">
+            <img src="upfile/1516010709.jpg" alt="">
+        </div>
+
+        <div class="met-crumbs">
+            <div class="jwrap">
+                <a href="pro-list.html" class="icon wb-home">全部商品</a>
+                <a id="typeName"></a>
+                <span class="fr">商品编号： AN10005</span>
+            </div>
+        </div>
+        <div style="min-height:500px">
+            <div class="wrapper bg-white">
+                <div class="jwrap">
+                    <!--产品参数开始-->
+                    <div class="pro_topdiv" style="display:none">
+                        <div class="pro_thumb_img fl">
+                            <div>
+                                <div id="preview" class="spec-preview">
+                                    <span class="jqzoom"></span>
+                                </div>
+                                <!--缩图开始-->
+                                <div class="spec-scroll">
+                                    <a class="prev">&lt;</a>
+                                    <a class="next">&gt;</a>
+                                    <div class="items">
+                                        <ul></ul>
+                                    </div>
+                                </div>
+                                <!--缩图结束-->
+                            </div>
+
+                        </div>
+                        <div class="pro_base_info fl">
+                            <div class="title"></div>
+                            <div class="skuItem">
+                                <span class="leftspan fl">价格</span>
+                                <span class="price fl">￥
+                                    <label></label>
+                                </span>
+                            </div>
+                            <div class="pro_sku" id="pro-Skulist">
+                                <!-- <div class="skuItem">
+                            <span class="leftspan fl">颜色</span>
+                            <ul class="fl">
+                                <li>
+                                    红色
+                                </li>                                 
+                            </ul>
+                        </div>
+                        <div class="sku-other-input"><input type="text" placeholder="备注"></div> -->
+                            </div>
+
+                            <div class="skuItem">
+                                <span class="leftspan fl">
+                                    数量
+                                </span>
+                                <div class="proNum fl">
+                                    <a href="javascript:;" class="icon-reduce" onclick="changeNum(-1)">-</a>
+                                    <input type="text" value="1" id="proNum" readonly>
+                                    <a href="javascript:;" class="icon-plus" onclick="changeNum(1)">+</a>
+                                </div>
+                                <a href="javascript:;" class="add-like">加入收藏</a>
+                                <a class="download-cad" style="display:none">下载CAD图纸</a>
+                            </div>
+                            <div class="skuItem">
+                                <div style="margin-left: 66px;margin-top: 20px">
+                                    <a href="javascript:;" class="btn-buy">加入清单</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--产品参数结束-->
+
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="jwrap" id="detail-bottom" style="display:none">
+                    <div class="sidebar-piclist  bg-white">
+                        <div class="product-hot">
+                            <h3>为您推荐</h3>
+                            <ul>
+                                <!-- <li>
+                                    <a href="#">
+                                        <img src="upfile/1516005765.jpg" alt="">
+                                    </a>
+                                    <h4>
+                                        <a href="#">莎利山小屋 / Benn & Penna 建筑事务所</a>
+                                    </h4>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="product-detail bg-white">
+                        <ul class="nav-tab">
+                            <li class="cur">详细信息</li>
+                        </ul>
+                        <div>
+                            <aside class="tab-content">
+                                <ul class="base-detail" id="productParams">
+                                    <!-- <li>品牌名称：亚力山大</li>  -->
+                                </ul>
+                                <div style="padding:20px" id="goodsInfo">
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="plugins/jquery/jquery.min1.8.3.js"></script>
+    <script src="plugins/jquery-jqzoom/jquery.jqzoom.js"></script>
+    <script src="plugins/layer-v3.1.1/layer.js"></script>
+    <script src="plugins/layui/layui.js"></script>
+    <script src="assets/js/base.js"></script>
+    <script src="assets/js/ImgZoom.js"></script>
+    <script src="assets/do/addshopcart.js"></script>
+    <script src="assets/do/detail.js"></script>
+    <script>
+        //获取推荐产品   
+        getProduct({
+            pageNum: 1,
+            pageSize: 5,
+            stickFlag: 1
+        }, 0, function (data) {
+            if (data.length > 0) {
+                data.forEach(function (val) {
+                    $('.product-hot ul').append('<li>' +
+                        '<a href="pro-detail.html?id=' + val.id + '">' +
+                        '<img src="' + val.mainPic + '" />' +
+                        '</a>' +
+                        '<h4>' +
+                        '<a href="pro-detail.html?id=' + val.id + '">' + val.goodsName + '</a>' +
+                        '</h4>' +
+                        '</li>')
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>
